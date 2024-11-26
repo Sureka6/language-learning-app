@@ -1,0 +1,111 @@
+import random
+import json
+
+# Define vocabulary (can be extended or replaced with a database for scalability)
+vocabulary = {
+    "cat": "a small domesticated carnivorous mammal",
+    "dog": "a domesticated carnivorous mammal",
+    "apple": "a round fruit with red or green skin",
+    "banana": "a long curved fruit with yellow skin",
+    "house": "a building for human habitation"
+}
+
+# User progress stored in a dictionary (for simplicity, could be stored in a file/database)
+user_progress = {
+    "correct": 0,
+    "incorrect": 0
+}
+
+# Function to ask a quiz question
+def ask_question():
+    word = random.choice(list(vocabulary.keys()))
+    correct_answer = vocabulary[word]
+    
+    print(f"What is the meaning of '{word}'?")
+    user_answer = input("Your answer: ")
+    
+    if user_answer.lower() == correct_answer.lower():
+        print("Correct!")
+        user_progress["correct"] += 1
+    else:
+        print(f"Incorrect! The correct answer is: {correct_answer}")
+        user_progress["incorrect"] += 1
+
+# Function to show user progress
+def show_progress():
+    print(f"\nYour progress:")
+    print(f"Correct answers: {user_progress['correct']}")
+    print(f"Incorrect answers: {user_progress['incorrect']}")
+    print(f"Total attempts: {user_progress['correct'] + user_progress['incorrect']}")
+
+# Save user progress to a file (e.g., 'progress.json') to persist between sessions
+def save_progress():
+    with open("progress.json", "w") as file:
+        json.dump(user_progress, file)
+    print("Your progress has been saved!")
+
+# Load user progress from a file (if it exists)
+def load_progress():
+    try:
+        with open("progress.json", "r") as file:
+            global user_progress
+            user_progress = json.load(file)
+    except FileNotFoundError:
+        print("No previous progress found, starting fresh.")
+
+# Main function to run the app
+def main():
+    load_progress()
+    
+    while True:
+        print("\n1. Start Quiz")
+        print("2. Show Progress")
+        print("3. Save and Exit")
+        
+        choice = input("Choose an option: ")
+        
+        if choice == "1":
+            ask_question()
+        elif choice == "2":
+            show_progress()
+        elif choice == "3":
+            save_progress()
+            break
+        else:
+            print("Invalid choice, please select again.")
+
+
+
+Copy code
+1. Start Quiz
+2. Show Progress
+3. Save and Exit
+Choose an option: 1
+What is the meaning of 'dog'?
+Your answer: a domesticated carnivorous mammal
+Correct!
+
+1. Start Quiz
+2. Show Progress
+3. Save and Exit
+Choose an option: 1
+What is the meaning of 'banana'?
+Your answer: a fruit with yellow skin
+Incorrect! The correct answer is: a long curved fruit with yellow skin
+
+1. Start Quiz
+2. Show Progress
+3. Save and Exit
+Choose an option: 2
+
+Your progress:
+Correct answers: 1
+Incorrect answers: 1
+Total attempts: 2
+
+1. Start Quiz
+2. Show Progress
+3. Save and Exit
+Choose an option: 3
+Your progress has been saved!
+4. Explanation of Key Functions
